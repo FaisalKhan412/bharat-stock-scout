@@ -6,8 +6,25 @@
     <title>📈 Bharat Stock Scout</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
+    <!-- Added for API loading indicator -->
+    <style>
+        .api-loading {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            background: rgba(0,0,0,0.7);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 12px;
+            z-index: 1000;
+        }
+    </style>
 </head>
 <body>
+    <!-- Added API status indicator -->
+    <div id="api-status" class="api-loading" style="display: none;">Loading API Data...</div>
+
     <header class="header">
         <h1>📊 Bharat Stock Scout</h1>
         <p>NSE/BSE Market Picks</p>
