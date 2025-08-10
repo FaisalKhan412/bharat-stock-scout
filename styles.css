@@ -1,0 +1,102 @@
+/* Core Styles */
+body {
+    font-family: 'Poppins', sans-serif;
+    background: #f8fafc;
+    padding: 20px;
+    line-height: 1.5;
+    color: #1e293b;
+}
+
+.header {
+    text-align: center;
+    margin-bottom: 1.5rem;
+}
+
+/* Tab System */
+.tabs {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+    overflow-x: auto;
+    padding-bottom: 0.5rem;
+}
+
+.tab-btn {
+    padding: 0.75rem 1.25rem;
+    border: none;
+    background: #e2e8f0;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    font-weight: 600;
+    white-space: nowrap;
+    transition: all 0.2s;
+}
+
+.tab-btn.active {
+    background: #2563eb;
+    color: white;
+}
+
+/* Tab Content */
+.tab-content {
+    display: none;
+}
+
+.tab-content.active {
+    display: block;
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* Table Styles */
+.table-container {
+    overflow-x: auto;
+    margin-bottom: 2rem;
+    background: white;
+    border-radius: 0.5rem;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.stock-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.stock-table th, 
+.stock-table td {
+    padding: 0.75rem 1rem;
+    text-align: left;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.stock-table th {
+    background: #f1f5f9;
+    font-weight: 700;
+    position: sticky;
+    top: 0;
+}
+
+/* Color Coding */
+.profit { color: #10b981; font-weight: 600; }
+.loss { color: #ef4444; font-weight: 600; }
+.neutral { color: #64748b; }
+
+/* Responsive */
+@media (max-width: 768px) {
+    body {
+        padding: 10px;
+    }
+    
+    .stock-table {
+        font-size: 0.875rem;
+    }
+    
+    .stock-table th, 
+    .stock-table td {
+        padding: 0.5rem 0.75rem;
+    }
+}

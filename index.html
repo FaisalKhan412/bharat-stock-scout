@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en-IN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📈 Bharat Stock Scout</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header class="header">
+        <h1>📊 Bharat Stock Scout</h1>
+        <p>NSE/BSE Market Picks</p>
+    </header>
+
+    <nav class="tabs">
+        <button class="tab-btn active" data-tab="intraday">⚡ Intraday</button>
+        <button class="tab-btn" data-tab="swing">📈 Swing (1-3W)</button>
+        <button class="tab-btn" data-tab="long-term">🏛️ Fundamental</button>
+    </nav>
+
+    <main>
+        <!-- 1. Intraday Section -->
+        <section id="intraday" class="tab-content active">
+            <div class="table-container">
+                <table class="stock-table">
+                    <thead>
+                        <tr>
+                            <th>Symbol</th>
+                            <th>Price (₹)</th>
+                            <th>Volume</th>
+                            <th>RSI</th>
+                            <th>Target</th>
+                            <th>Stop Loss</th>
+                            <th>Profit%</th>
+                            <th>Loss%</th>
+                        </tr>
+                    </thead>
+                    <tbody id="intraday-stocks">
+                        <tr>
+                            <td>RELIANCE</td>
+                            <td>₹2,450.50</td>
+                            <td>8.2M</td>
+                            <td class="neutral">58</td>
+                            <td>₹2,550</td>
+                            <td>₹2,400</td>
+                            <td class="profit">+4.1%</td>
+                            <td class="loss">-2.0%</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- 2. Swing Section -->
+        <section id="swing" class="tab-content">
+            <div class="table-container">
+                <table class="stock-table">
+                    <thead>
+                        <tr>
+                            <th>Symbol</th>
+                            <th>Price (₹)</th>
+                            <th>Pattern</th>
+                            <th>Target</th>
+                            <th>Stop Loss</th>
+                            <th>Profit%</th>
+                            <th>Loss%</th>
+                        </tr>
+                    </thead>
+                    <tbody id="swing-stocks">
+                        <tr>
+                            <td>TATASTEEL</td>
+                            <td>₹120.50</td>
+                            <td>Cup & Handle</td>
+                            <td>₹135</td>
+                            <td>₹110</td>
+                            <td class="profit">+12.0%</td>
+                            <td class="loss">-8.7%</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- 3. Fundamental Section -->
+        <section id="long-term" class="tab-content">
+            <div class="table-container">
+                <table class="stock-table">
+                    <thead>
+                        <tr>
+                            <th>Symbol</th>
+                            <th>Price (₹)</th>
+                            <th>P/E</th>
+                            <th>ROE%</th>
+                            <th>Debt/Equity</th>
+                            <th>Target</th>
+                        </tr>
+                    </thead>
+                    <tbody id="long-term-stocks">
+                        <tr>
+                            <td>INFY</td>
+                            <td>₹1,850.75</td>
+                            <td class="loss">25.3</td>
+                            <td class="profit">28.5%</td>
+                            <td class="profit">0.3</td>
+                            <td>₹2,100</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+
+    <script src="app.js"></script>
+</body>
+</html>
