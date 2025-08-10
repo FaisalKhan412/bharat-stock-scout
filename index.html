@@ -16,7 +16,7 @@
     <nav class="tabs">
         <button class="tab-btn active" data-tab="intraday">⚡ Intraday</button>
         <button class="tab-btn" data-tab="swing">📈 Swing (1-3W)</button>
-        <button class="tab-btn" data-tab="long-term">🏛️ Fundamental</button>
+        <button class="tab-btn" data-tab="investment">🏛️ Investment</button> <!-- Changed -->
     </nav>
 
     <main>
@@ -36,18 +36,7 @@
                             <th>Loss%</th>
                         </tr>
                     </thead>
-                    <tbody id="intraday-stocks">
-                        <tr>
-                            <td>RELIANCE</td>
-                            <td>₹2,450.50</td>
-                            <td>8.2M</td>
-                            <td class="neutral">58</td>
-                            <td>₹2,550</td>
-                            <td>₹2,400</td>
-                            <td class="profit">+4.1%</td>
-                            <td class="loss">-2.0%</td>
-                        </tr>
-                    </tbody>
+                    <tbody id="intraday-stocks"></tbody>
                 </table>
             </div>
         </section>
@@ -67,23 +56,13 @@
                             <th>Loss%</th>
                         </tr>
                     </thead>
-                    <tbody id="swing-stocks">
-                        <tr>
-                            <td>TATASTEEL</td>
-                            <td>₹120.50</td>
-                            <td>Cup & Handle</td>
-                            <td>₹135</td>
-                            <td>₹110</td>
-                            <td class="profit">+12.0%</td>
-                            <td class="loss">-8.7%</td>
-                        </tr>
-                    </tbody>
+                    <tbody id="swing-stocks"></tbody>
                 </table>
             </div>
         </section>
 
-        <!-- 3. Fundamental Section -->
-        <section id="long-term" class="tab-content">
+        <!-- 3. Investment Section (Renamed) -->
+        <section id="investment" class="tab-content"> <!-- Changed -->
             <div class="table-container">
                 <table class="stock-table">
                     <thead>
@@ -96,16 +75,7 @@
                             <th>Target</th>
                         </tr>
                     </thead>
-                    <tbody id="long-term-stocks">
-                        <tr>
-                            <td>INFY</td>
-                            <td>₹1,850.75</td>
-                            <td class="loss">25.3</td>
-                            <td class="profit">28.5%</td>
-                            <td class="profit">0.3</td>
-                            <td>₹2,100</td>
-                        </tr>
-                    </tbody>
+                    <tbody id="investment-stocks"></tbody> <!-- Changed -->
                 </table>
             </div>
         </section>
