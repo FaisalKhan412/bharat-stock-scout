@@ -16,7 +16,7 @@
     <nav class="tabs">
         <button class="tab-btn active" data-tab="intraday">⚡ Intraday</button>
         <button class="tab-btn" data-tab="swing">📈 Swing (1-3W)</button>
-        <button class="tab-btn" data-tab="investment">🏛️ Investment</button> <!-- Changed -->
+        <button class="tab-btn" data-tab="investment">🏛️ Investment</button>
     </nav>
 
     <main>
@@ -61,8 +61,18 @@
             </div>
         </section>
 
-        <!-- 3. Investment Section (Renamed) -->
-        <section id="investment" class="tab-content"> <!-- Changed -->
+        <!-- 3. Investment Section -->
+        <section id="investment" class="tab-content">
+            <div class="filters">
+                <select id="sector-filter" class="filter-dropdown">
+                    <option value="all">All Sectors</option>
+                    <option value="IT">Information Technology</option>
+                    <option value="BANK">Banking</option>
+                    <option value="AUTO">Automobile</option>
+                    <option value="FMCG">FMCG</option>
+                    <option value="PHARMA">Pharmaceuticals</option>
+                </select>
+            </div>
             <div class="table-container">
                 <table class="stock-table">
                     <thead>
@@ -71,11 +81,12 @@
                             <th>Price (₹)</th>
                             <th>P/E</th>
                             <th>ROE%</th>
-                            <th>Debt/Equity</th>
+                            <th>Sector</th>
+                            <th>Div Yield%</th>
                             <th>Target</th>
                         </tr>
                     </thead>
-                    <tbody id="investment-stocks"></tbody> <!-- Changed -->
+                    <tbody id="investment-stocks"></tbody>
                 </table>
             </div>
         </section>

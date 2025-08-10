@@ -19,14 +19,51 @@ const stocks = {
             stopLoss: 110
         }
     ],
-    investment: [ // Changed from 'long-term'
+    investment: [
         {
             symbol: "INFY",
             price: 1850.75,
             pe: 25.3,
             roe: 28.5,
-            debtToEquity: 0.3,
+            sector: "IT",
+            dividendYield: 2.4,
             target: 2100
+        },
+        {
+            symbol: "HDFCBANK",
+            price: 1650.25,
+            pe: 18.7,
+            roe: 16.8,
+            sector: "BANK",
+            dividendYield: 1.2,
+            target: 1900
+        },
+        {
+            symbol: "MARUTI",
+            price: 9800.50,
+            pe: 32.1,
+            roe: 12.4,
+            sector: "AUTO",
+            dividendYield: 0.8,
+            target: 11000
+        },
+        {
+            symbol: "ITC",
+            price: 420.75,
+            pe: 22.4,
+            roe: 24.1,
+            sector: "FMCG",
+            dividendYield: 3.2,
+            target: 480
+        },
+        {
+            symbol: "SUNPHARMA",
+            price: 1250.00,
+            pe: 28.3,
+            roe: 14.7,
+            sector: "PHARMA",
+            dividendYield: 1.1,
+            target: 1400
         }
     ]
 };
@@ -70,9 +107,10 @@ function renderStockRow(type, stock) {
         row.innerHTML = `
             <td>${stock.symbol}</td>
             <td>₹${stock.price.toLocaleString('en-IN')}</td>
-            <td class="${stock.pe < 30 ? 'profit' : 'loss'}">${stock.pe}</td>
+            <td class="${stock.pe < 20 ? 'profit' : 'loss'}">${stock.pe}</td>
             <td class="${stock.roe > 15 ? 'profit' : 'loss'}">${stock.roe}%</td>
-            <td class="${stock.debtToEquity < 1 ? 'profit' : 'loss'}">${stock.debtToEquity}</td>
+            <td>${stock.sector}</td>
+            <td>${stock.dividendYield}%</td>
             <td>₹${stock.target}</td>
         `;
     }
@@ -90,14 +128,36 @@ function renderStocks(type) {
     });
 }
 
+function setupSectorFilter() {
+    const filter = document.getElementById('sector-filter');
+    if (!filter) return;
+    
+    filter.addEventListener('change', (e) => {
+        const sector = e.target.value;
+        const container = document.getElementById('investment-stocks');
+        
+        if (sector === 'all') {
+            renderStocks('investment');
+            return;
+        }
+        
+        container.innerHTML = '';
+        stocks.investment
+            .filter(stock => stock.sector === sector)
+            .forEach(stock => {
+                container.appendChild(renderStockRow('investment', stock));
+            });
+    });
+}
+
 // Initialize
 document.addEventListener('DOMContentLoaded', () => {
     // Render all sections
     renderStocks('intraday');
     renderStocks('swing');
-    renderStocks('investment'); // Changed
+    renderStocks('investment');
     
-    // Tab switching
+    // Setup tab switching
     document.querySelectorAll('.tab-btn').forEach(btn => {
         btn.addEventListener('click', () => {
             document.querySelector('.tab-btn.active').classList.remove('active');
@@ -107,4 +167,7 @@ document.addEventListener('DOMContentLoaded', () => {
             document.getElementById(btn.dataset.tab).classList.add('active');
         });
     });
+    
+    // Setup sector filter
+    setupSectorFilter();
 });

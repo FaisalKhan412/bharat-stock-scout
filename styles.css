@@ -52,6 +52,28 @@ body {
     to { opacity: 1; }
 }
 
+/* Filter Styles */
+.filters {
+    margin: 15px 0;
+    display: flex;
+    gap: 10px;
+}
+
+.filter-dropdown {
+    padding: 8px 12px;
+    border-radius: 6px;
+    border: 1px solid #cbd5e1;
+    background: white;
+    font-family: 'Poppins', sans-serif;
+    cursor: pointer;
+}
+
+.filter-dropdown:focus {
+    outline: none;
+    border-color: #2563eb;
+    box-shadow: 0 0 0 1px #2563eb;
+}
+
 /* Table Styles */
 .table-container {
     overflow-x: auto;
