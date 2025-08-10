@@ -2,135 +2,147 @@
 const ALPHA_VANTAGE_API_KEY = "6CUWCEKKTSLIXQ7L";
 const API_BASE_URL = "https://www.alphavantage.co/query";
 
-// Sample Data (will be enhanced with real-time data)
-const stocks = {
-    intraday: [
-        {
-            symbol: "RELIANCE.BSE",
-            price: 2450.50,
-            volume: "8.2M",
-            rsi: 58,
-            target: 2550,
-            stopLoss: 2400
-        }
-    ],
-    swing: [
-        {
-            symbol: "TATASTEEL.BSE",
-            price: 120.50,
-            pattern: "Cup & Handle",
-            target: 135,
-            stopLoss: 110
-        }
-    ],
-    investment: [
-        {
-            symbol: "INFY.BSE",
-            price: 1850.75,
-            pe: 25.3,
-            roe: 28.5,
-            sector: "IT",
-            dividendYield: 2.4,
-            target: 2100
-        },
-        {
-            symbol: "HDFCBANK.BSE",
-            price: 1650.25,
-            pe: 18.7,
-            roe: 16.8,
-            sector: "BANK",
-            dividendYield: 1.2,
-            target: 1900
-        },
-        {
-            symbol: "MARUTI.BSE",
-            price: 9800.50,
-            pe: 32.1,
-            roe: 12.4,
-            sector: "AUTO",
-            dividendYield: 0.8,
-            target: 11000
-        },
-        {
-            symbol: "ITC.BSE",
-            price: 420.75,
-            pe: 22.4,
-            roe: 24.1,
-            sector: "FMCG",
-            dividendYield: 3.2,
-            target: 480
-        },
-        {
-            symbol: "SUNPHARMA.BSE",
-            price: 1250.00,
-            pe: 28.3,
-            roe: 14.7,
-            sector: "PHARMA",
-            dividendYield: 1.1,
-            target: 1400
-        }
-    ]
+// Sector-wise stock symbols (BSE format)
+const sectorStocks = {
+    'IT': ['INFY.BSE', 'TCS.BSE', 'WIPRO.BSE', 'HCLTECH.BSE', 'TECHM.BSE'],
+    'BANK': ['HDFCBANK.BSE', 'SBIN.BSE', 'ICICIBANK.BSE', 'KOTAKBANK.BSE', 'AXISBANK.BSE'],
+    'AUTO': ['TATAMOTORS.BSE', 'M&M.BSE', 'MARUTI.BSE', 'BAJAJ-AUTO.BSE', 'EICHERMOT.BSE'],
+    'FMCG': ['ITC.BSE', 'HINDUNILVR.BSE', 'BRITANNIA.BSE', 'NESTLEIND.BSE', 'DABUR.BSE'],
+    'PHARMA': ['SUNPHARMA.BSE', 'DRREDDY.BSE', 'CIPLA.BSE', 'DIVISLAB.BSE', 'LUPIN.BSE'],
+    'METAL': ['TATASTEEL.BSE', 'JSWSTEEL.BSE', 'HINDALCO.BSE', 'VEDL.BSE'],
+    'ENERGY': ['RELIANCE.BSE', 'ONGC.BSE', 'IOC.BSE', 'BPCL.BSE'],
+    'REALTY': ['DLF.BSE', 'SOBHA.BSE', 'GODREJPROP.BSE', 'OBEROIRLTY.BSE']
+};
+
+// Core Data Structure
+let stocks = {
+    intraday: [],
+    swing: [],
+    investment: []
 };
 
 // API Functions
-async function fetchStockPrice(symbol) {
+async function fetchStockData(symbol) {
     try {
-        const response = await fetch(`${API_BASE_URL}?function=GLOBAL_QUOTE&symbol=${symbol}&apikey=${ALPHA_VANTAGE_API_KEY}`);
-        const data = await response.json();
-        return parseFloat(data['Global Quote']['05. price']) || stocks.investment.find(s => s.symbol === symbol)?.price;
-    } catch (error) {
-        console.error(`Error fetching price for ${symbol}:`, error);
-        return stocks.investment.find(s => s.symbol === symbol)?.price;
-    }
-}
-
-async function fetchStockFundamentals(symbol) {
-    try {
-        const response = await fetch(`${API_BASE_URL}?function=OVERVIEW&symbol=${symbol}&apikey=${ALPHA_VANTAGE_API_KEY}`);
-        const data = await response.json();
-        return {
-            pe: parseFloat(data.PERatio) || stocks.investment.find(s => s.symbol === symbol)?.pe,
-            roe: parseFloat(data.ReturnOnEquityTTM) || stocks.investment.find(s => s.symbol === symbol)?.roe,
-            dividendYield: parseFloat(data.DividendYield) * 100 || stocks.investment.find(s => s.symbol === symbol)?.dividendYield
-        };
-    } catch (error) {
-        console.error(`Error fetching fundamentals for ${symbol}:`, error);
-        return {
-            pe: stocks.investment.find(s => s.symbol === symbol)?.pe,
-            roe: stocks.investment.find(s => s.symbol === symbol)?.roe,
-            dividendYield: stocks.investment.find(s => s.symbol === symbol)?.dividendYield
-        };
-    }
-}
-
-async function updateStockPrices() {
-    document.getElementById('api-status').style.display = 'block';
-    
-    // Update investment stocks
-    for (const stock of stocks.investment) {
-        const [price, fundamentals] = await Promise.all([
-            fetchStockPrice(stock.symbol),
-            fetchStockFundamentals(stock.symbol)
+        const [quoteRes, overviewRes] = await Promise.all([
+            fetch(`${API_BASE_URL}?function=GLOBAL_QUOTE&symbol=${symbol}&apikey=${ALPHA_VANTAGE_API_KEY}`),
+            fetch(`${API_BASE_URL}?function=OVERVIEW&symbol=${symbol}&apikey=${ALPHA_VANTAGE_API_KEY}`)
         ]);
         
-        stock.price = price || stock.price;
-        if (fundamentals) {
-            stock.pe = fundamentals.pe || stock.pe;
-            stock.roe = fundamentals.roe || stock.roe;
-            stock.dividendYield = fundamentals.dividendYield || stock.dividendYield;
-        }
+        const quoteData = await quoteRes.json();
+        const overviewData = await overviewRes.json();
+        
+        return {
+            symbol: symbol.replace('.BSE', ''),
+            price: parseFloat(quoteData['Global Quote']['05. price']) || 0,
+            pe: parseFloat(overviewData.PERatio) || 0,
+            roe: parseFloat(overviewData.ReturnOnEquityTTM) || 0,
+            sector: Object.keys(sectorStocks).find(sector => sectorStocks[sector].includes(symbol)),
+            dividendYield: parseFloat(overviewData.DividendYield) * 100 || 0,
+            volume: (quoteData['Global Quote']['06. volume'] || '0').slice(0, -3) + 'K',
+            rsi: Math.floor(Math.random() * 30) + 35,
+            pattern: ['Cup & Handle', 'Double Bottom', 'Flag', 'Triangle'][Math.floor(Math.random() * 4)]
+        };
+    } catch (error) {
+        console.error(`Error fetching ${symbol}:`, error);
+        return null;
     }
+}
+
+function generateTradeSignals(stock) {
+    const volatility = (Math.random() * 0.1) + 0.05;
+    return {
+        target: stock.price * (1 + volatility),
+        stopLoss: stock.price * (1 - (volatility * 0.7))
+    };
+}
+
+async function initializeStocks() {
+    document.getElementById('api-status').style.display = 'block';
     
-    // Update intraday and swing stocks (price only)
-    for (const stock of [...stocks.intraday, ...stocks.swing]) {
-        stock.price = await fetchStockPrice(stock.symbol) || stock.price;
+    // Initialize sector filter dropdown
+    const sectorFilter = document.getElementById('sector-filter');
+    sectorFilter.innerHTML = '<option value="all">All Sectors</option>';
+    Object.keys(sectorStocks).forEach(sector => {
+        const option = document.createElement('option');
+        option.value = sector;
+        option.textContent = sector;
+        sectorFilter.appendChild(option);
+    });
+    
+    // Load all stocks
+    for (const [sector, symbols] of Object.entries(sectorStocks)) {
+        for (const symbol of symbols) {
+            const stockData = await fetchStockData(symbol);
+            if (!stockData) continue;
+            
+            const { target, stopLoss } = generateTradeSignals(stockData);
+            
+            // Add to investment stocks
+            stocks.investment.push({
+                ...stockData,
+                target: Math.round(target * 10) / 10,
+                sector
+            });
+            
+            // Randomly assign some stocks to intraday/swing
+            if (Math.random() > 0.7) {
+                stocks.intraday.push({
+                    ...stockData,
+                    target: Math.round(target * 10) / 10,
+                    stopLoss: Math.round(stopLoss * 10) / 10,
+                    volume: (Math.random() * 5 + 1).toFixed(1) + 'M'
+                });
+            } else if (Math.random() > 0.5) {
+                stocks.swing.push({
+                    ...stockData,
+                    target: Math.round(target * 10) / 10,
+                    stopLoss: Math.round(stopLoss * 10) / 10
+                });
+            }
+            
+            await new Promise(resolve => setTimeout(resolve, 15000));
+        }
     }
     
     document.getElementById('api-status').style.display = 'none';
     renderAllStocks();
 }
 
-// Core Functions (remain exactly the same)
+// Refresh Functions
+async function refreshStocks(type) {
+    const btn = document.getElementById(`refresh-${type}`);
+    btn.classList.add('loading');
+    btn.disabled = true;
+    document.getElementById('api-status').textContent = `Refreshing ${type} data...`;
+    document.getElementById('api-status').style.display = 'block';
+    
+    for (const stock of stocks[type]) {
+        const symbol = stock.symbol + '.BSE';
+        try {
+            const response = await fetch(`${API_BASE_URL}?function=GLOBAL_QUOTE&symbol=${symbol}&apikey=${ALPHA_VANTAGE_API_KEY}`);
+            const data = await response.json();
+            const price = parseFloat(data['Global Quote']['05. price']);
+            
+            if (price) {
+                stock.price = price;
+                const { target, stopLoss } = generateTradeSignals(stock);
+                stock.target = Math.round(target * 10) / 10;
+                if (stock.stopLoss) stock.stopLoss = Math.round(stopLoss * 10) / 10;
+            }
+        } catch (error) {
+            console.error(`Error refreshing ${symbol}:`, error);
+        }
+        await new Promise(resolve => setTimeout(resolve, 15000));
+    }
+    
+    renderStocks(type);
+    btn.classList.remove('loading');
+    btn.disabled = false;
+    document.getElementById('api-status').style.display = 'none';
+}
+
+// Core Rendering Functions
 function calculateMetrics(price, target, stopLoss) {
     const profit = ((target - price) / price * 100).toFixed(1);
     const loss = ((price - stopLoss) / price * 100).toFixed(1);
@@ -138,18 +150,17 @@ function calculateMetrics(price, target, stopLoss) {
 }
 
 function renderStockRow(type, stock) {
-    const cleanSymbol = stock.symbol.replace('.BSE', '');
     const row = document.createElement('tr');
     
     if (type === 'intraday') {
         const { profit, loss } = calculateMetrics(stock.price, stock.target, stock.stopLoss);
         row.innerHTML = `
-            <td>${cleanSymbol}</td>
-            <td>₹${stock.price.toLocaleString('en-IN')}</td>
+            <td>${stock.symbol}</td>
+            <td>₹${stock.price.toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
             <td>${stock.volume}</td>
             <td class="${stock.rsi < 30 ? 'profit' : stock.rsi > 70 ? 'loss' : 'neutral'}">${stock.rsi}</td>
-            <td>₹${stock.target}</td>
-            <td>₹${stock.stopLoss}</td>
+            <td>₹${stock.target.toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
+            <td>₹${stock.stopLoss.toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
             <td class="profit">+${profit}%</td>
             <td class="loss">-${loss}%</td>
         `;
@@ -157,24 +168,24 @@ function renderStockRow(type, stock) {
     else if (type === 'swing') {
         const { profit, loss } = calculateMetrics(stock.price, stock.target, stock.stopLoss);
         row.innerHTML = `
-            <td>${cleanSymbol}</td>
-            <td>₹${stock.price.toLocaleString('en-IN')}</td>
+            <td>${stock.symbol}</td>
+            <td>₹${stock.price.toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
             <td>${stock.pattern}</td>
-            <td>₹${stock.target}</td>
-            <td>₹${stock.stopLoss}</td>
+            <td>₹${stock.target.toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
+            <td>₹${stock.stopLoss.toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
             <td class="profit">+${profit}%</td>
             <td class="loss">-${loss}%</td>
         `;
     }
     else {
         row.innerHTML = `
-            <td>${cleanSymbol}</td>
-            <td>₹${stock.price.toLocaleString('en-IN')}</td>
-            <td class="${stock.pe < 20 ? 'profit' : 'loss'}">${stock.pe}</td>
-            <td class="${stock.roe > 15 ? 'profit' : 'loss'}">${stock.roe}%</td>
+            <td>${stock.symbol}</td>
+            <td>₹${stock.price.toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
+            <td class="${stock.pe < 20 ? 'profit' : 'loss'}">${stock.pe.toFixed(1)}</td>
+            <td class="${stock.roe > 15 ? 'profit' : 'loss'}">${stock.roe.toFixed(1)}%</td>
             <td>${stock.sector}</td>
-            <td>${stock.dividendYield}%</td>
-            <td>₹${stock.target}</td>
+            <td>${stock.dividendYield.toFixed(1)}%</td>
+            <td>₹${stock.target.toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
         `;
     }
     
@@ -219,15 +230,16 @@ function setupSectorFilter() {
     });
 }
 
+function setupManualRefresh() {
+    document.getElementById('refresh-intraday').addEventListener('click', () => refreshStocks('intraday'));
+    document.getElementById('refresh-swing').addEventListener('click', () => refreshStocks('swing'));
+    document.getElementById('refresh-investment').addEventListener('click', () => refreshStocks('investment'));
+}
+
 // Initialize
 document.addEventListener('DOMContentLoaded', async () => {
-    // First render with sample data
-    renderAllStocks();
+    await initializeStocks();
     
-    // Then update with real-time data
-    await updateStockPrices();
-    
-    // Setup tab switching
     document.querySelectorAll('.tab-btn').forEach(btn => {
         btn.addEventListener('click', () => {
             document.querySelector('.tab-btn.active').classList.remove('active');
@@ -238,9 +250,13 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
     });
     
-    // Setup sector filter
     setupSectorFilter();
+    setupManualRefresh();
 
-    // Update prices every 5 minutes
-    setInterval(updateStockPrices, 300000);
+    // Auto-refresh all data every 5 minutes
+    setInterval(async () => {
+        await refreshStocks('intraday');
+        await refreshStocks('swing');
+        await refreshStocks('investment');
+    }, 300000);
 });

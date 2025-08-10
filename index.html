@@ -6,9 +6,8 @@
     <title>📈 Bharat Stock Scout</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
-    <!-- Added for API loading indicator -->
     <style>
-        .api-loading {
+        .api-status {
             position: fixed;
             top: 10px;
             right: 10px;
@@ -18,12 +17,12 @@
             border-radius: 5px;
             font-size: 12px;
             z-index: 1000;
+            display: none;
         }
     </style>
 </head>
 <body>
-    <!-- Added API status indicator -->
-    <div id="api-status" class="api-loading" style="display: none;">Loading API Data...</div>
+    <div id="api-status" class="api-status">Loading API Data...</div>
 
     <header class="header">
         <h1>📊 Bharat Stock Scout</h1>
@@ -39,6 +38,11 @@
     <main>
         <!-- 1. Intraday Section -->
         <section id="intraday" class="tab-content active">
+            <div class="filters">
+                <button id="refresh-intraday" class="refresh-button">
+                    🔄 Refresh
+                </button>
+            </div>
             <div class="table-container">
                 <table class="stock-table">
                     <thead>
@@ -60,6 +64,11 @@
 
         <!-- 2. Swing Section -->
         <section id="swing" class="tab-content">
+            <div class="filters">
+                <button id="refresh-swing" class="refresh-button">
+                    🔄 Refresh
+                </button>
+            </div>
             <div class="table-container">
                 <table class="stock-table">
                     <thead>
@@ -88,7 +97,13 @@
                     <option value="AUTO">Automobile</option>
                     <option value="FMCG">FMCG</option>
                     <option value="PHARMA">Pharmaceuticals</option>
+                    <option value="METAL">Metals</option>
+                    <option value="ENERGY">Energy</option>
+                    <option value="REALTY">Real Estate</option>
                 </select>
+                <button id="refresh-investment" class="refresh-button">
+                    🔄 Refresh
+                </button>
             </div>
             <div class="table-container">
                 <table class="stock-table">
